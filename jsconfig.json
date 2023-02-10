@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
-        "checkJs": true
-    },
+        "checkJs": true,
+        "lib": ["es6", "dom", "es2022"],
+        "target": "es6",
+      },
     "include": ["**/*.js", "**/*.ts"]
 }
