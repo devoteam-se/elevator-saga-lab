@@ -10,7 +10,7 @@
         // Whenever the elevator is idle, make it go to all the floors
         elevator.on("idle", () => {
           if (elevator.getPressedFloors().length > 0) {
-            elevator.goToFloor(elevator.getPressedFloors()[0]);
+            elevator.getPressedFloors().forEach((f) => elevator.goToFloor(f));
           } else {
             elevator.goToFloor(0);
           }
