@@ -1,6 +1,7 @@
 {
-    "compilerOptions": {
-        "checkJs": true
-    },
-    "include": ["**/*.js", "**/*.ts"]
+  "compilerOptions": {
+    "checkJs": true,
+    "lib": ["es2016"]
+  },
+  "include": ["**/*.js", "**/*.ts"]
 }
