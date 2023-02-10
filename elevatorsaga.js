@@ -5,13 +5,20 @@
      * @param {Floor[]} floors - the floors
      */
     function init(elevators, floors) {
+        let goingUp = true;
         // Let's go through all the elevators
         for (const elevator of elevators) {
             // Whenever the elevator is idle, make it go to all the floors
             elevator.on('idle', () => {
-                elevator.goToFloor(0);
-                elevator.goToFloor(1);
-                elevator.goToFloor(2);
+                const curr = elevator.currentFloor(); 
+                if (elevator.currentFloor() === floors.length) {
+                    goingUp = false;
+                } 
+                if (elevator.currentFloor() === 0) {
+                    goingUp = true;
+                } 
+
+                elevator.goToFloor((curr + (goingUp ? 1 : -1)) % floors.length);
             })            
         }
     },
