@@ -16,9 +16,47 @@
           elevator.goToFloor(floorNum);
         });
 
-        elevator.on("passing_floor", function (floorNum, direction) {
-          if (elevator.getPressedFloors().some((f) => f === floorNum)) {
-            elevator.goToFloor(floorNum, true);
+        elevator.on("passing_floor", function (floorNum, direction) {});
+      }
+
+      for (const floor of floors) {
+        floor.on("up_button_pressed", function () {
+          if (
+            elevators.some((e) => e.destinationQueue.includes(floor.floorNum()))
+          ) {
+            return;
+          }
+          const freeElevators = elevators
+            .filter((e) => e.loadFactor() === 0)
+            .filter((e) => e.destinationQueue.length === 0);
+          if (freeElevators.length) {
+            freeElevators[0].goToFloor(floor.floorNum());
+          } else {
+            const leastBusy = elevators.sort(
+              (e1, e2) =>
+                e2.destinationQueue.length - e1.destinationQueue.length
+            );
+            leastBusy[0].goToFloor(floor.floorNum());
+          }
+        });
+
+        floor.on("down_button_pressed", function () {
+          if (
+            elevators.some((e) => e.destinationQueue.includes(floor.floorNum()))
+          ) {
+            return;
+          }
+          const freeElevators = elevators
+            .filter((e) => e.loadFactor() === 0)
+            .filter((e) => e.destinationQueue.length === 0);
+          if (freeElevators.length) {
+            freeElevators[0].goToFloor(floor.floorNum());
+          } else {
+            const leastBusy = elevators.sort(
+              (e1, e2) =>
+                e2.destinationQueue.length - e1.destinationQueue.length
+            );
+            leastBusy[0].goToFloor(floor.floorNum());
           }
         });
       }
