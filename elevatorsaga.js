@@ -16,48 +16,56 @@
           elevator.goToFloor(floorNum);
         });
 
-        elevator.on("passing_floor", function (floorNum, direction) {});
-      }
-
-      for (const floor of floors) {
-        floor.on("up_button_pressed", function () {
-          if (
-            elevators.some((e) => e.destinationQueue.includes(floor.floorNum()))
-          ) {
-            return;
-          }
-          const freeElevators = elevators
-            .filter((e) => e.loadFactor() === 0)
-            .filter((e) => e.destinationQueue.length === 0);
-          if (freeElevators.length) {
-            freeElevators[0].goToFloor(floor.floorNum());
-          } else {
-            const leastBusy = elevators.sort(
-              (e1, e2) =>
-                e2.destinationQueue.length - e1.destinationQueue.length
+        elevator.on("passing_floor", function (floorNum, direction) {
+          if (elevator.destinationQueue.includes(floorNum)) {
+            elevator.destinationQueue = elevator.destinationQueue.filter(
+              (q) => q !== floorNum
             );
-            leastBusy[0].goToFloor(floor.floorNum());
+            elevator.checkDestinationQueue();
+            elevator.goToFloor(floorNum, true);
           }
         });
 
-        floor.on("down_button_pressed", function () {
-          if (
-            elevators.some((e) => e.destinationQueue.includes(floor.floorNum()))
-          ) {
-            return;
-          }
-          const freeElevators = elevators
-            .filter((e) => e.loadFactor() === 0)
-            .filter((e) => e.destinationQueue.length === 0);
-          if (freeElevators.length) {
-            freeElevators[0].goToFloor(floor.floorNum());
-          } else {
-            const leastBusy = elevators.sort(
-              (e1, e2) =>
-                e2.destinationQueue.length - e1.destinationQueue.length
+        elevator.on("stopped_at_floor", function (floorNum) {
+          if (elevator.destinationQueue.includes(floorNum)) {
+            elevator.destinationQueue = elevator.destinationQueue.filter(
+              (q) => q !== floorNum
             );
-            leastBusy[0].goToFloor(floor.floorNum());
+            elevator.checkDestinationQueue();
           }
+        });
+      }
+
+      /**
+       *
+       * @param {Floor} floor
+       */
+      const onButtonPressed = (floor) => {
+        if (
+          elevators.some((e) => e.destinationQueue.includes(floor.floorNum()))
+        ) {
+          return;
+        }
+        const freeElevators = elevators
+          .filter((e) => e.loadFactor() === 0)
+          .filter((e) => e.destinationQueue.length === 0);
+        if (freeElevators.length) {
+          freeElevators[0].goToFloor(floor.floorNum());
+        } else {
+          const leastBusy = elevators.sort(
+            (e1, e2) => e2.destinationQueue.length - e1.destinationQueue.length
+          );
+          leastBusy[0].goToFloor(floor.floorNum());
+        }
+      };
+
+      for (const floor of floors) {
+        floor.on("up_button_pressed", function () {
+          onButtonPressed(floor);
+        });
+
+        floor.on("down_button_pressed", function () {
+          onButtonPressed(floor);
         });
       }
     },
