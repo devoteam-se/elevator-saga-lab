@@ -17,22 +17,22 @@
         });
 
         elevator.on("passing_floor", function (floorNum, direction) {
-          if (elevator.destinationQueue.includes(floorNum)) {
-            elevator.destinationQueue = elevator.destinationQueue.filter(
-              (q) => q !== floorNum
-            );
-            elevator.checkDestinationQueue();
-            elevator.goToFloor(floorNum, true);
-          }
+          //   if (elevator.destinationQueue.includes(floorNum)) {
+          //     elevator.destinationQueue = elevator.destinationQueue.filter(
+          //       (q) => q !== floorNum
+          //     );
+          //     elevator.checkDestinationQueue();
+          //     elevator.goToFloor(floorNum, true);
+          //   }
         });
 
         elevator.on("stopped_at_floor", function (floorNum) {
-          if (elevator.destinationQueue.includes(floorNum)) {
-            elevator.destinationQueue = elevator.destinationQueue.filter(
-              (q) => q !== floorNum
-            );
-            elevator.checkDestinationQueue();
-          }
+          //   if (elevator.destinationQueue.includes(floorNum)) {
+          //     elevator.destinationQueue = elevator.destinationQueue.filter(
+          //       (q) => q !== floorNum
+          //     );
+          //     elevator.checkDestinationQueue();
+          //   }
         });
       }
 
@@ -46,14 +46,14 @@
         ) {
           return;
         }
-        const freeElevators = elevators
-          .filter((e) => e.loadFactor() === 0)
-          .filter((e) => e.destinationQueue.length === 0);
+        const freeElevators = elevators.filter(
+          (e) => e.destinationQueue.length === 0
+        );
         if (freeElevators.length) {
           freeElevators[0].goToFloor(floor.floorNum());
         } else {
           const leastBusy = elevators.sort(
-            (e1, e2) => e2.destinationQueue.length - e1.destinationQueue.length
+            (e1, e2) => e1.destinationQueue.length - e2.destinationQueue.length
           );
           leastBusy[0].goToFloor(floor.floorNum());
         }
