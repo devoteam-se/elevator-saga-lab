@@ -9,10 +9,16 @@
       for (const elevator of elevators) {
         // Whenever the elevator is idle, make it go to all the floors
         elevator.on("idle", () => {
-          if (elevator.getPressedFloors().length > 0) {
-            elevator.getPressedFloors().forEach((f) => elevator.goToFloor(f));
-          } else {
-            elevator.goToFloor(0);
+          elevator.goToFloor(0);
+        });
+
+        elevator.on("floor_button_pressed", function (floorNum) {
+          elevator.goToFloor(floorNum);
+        });
+
+        elevator.on("passing_floor", function (floorNum, direction) {
+          if (elevator.getPressedFloors().some((f) => f === floorNum)) {
+            elevator.goToFloor(floorNum, true);
           }
         });
       }
