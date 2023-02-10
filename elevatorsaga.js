@@ -5,15 +5,26 @@
          * @param {Floor[]} floors - the floors
          */
         function init(elevators, floors) {
-            // Let's go through all the elevators
+            const getEmptiestElevator = () => {
+                return [...elevators].sort((e1, e2) => e1.loadFactor() - e2.loadFactor())[0];
+            }
+
             for (const elevator of elevators) {
-                // Whenever the elevator is idle, make it go to all the floors
                 elevator.on('idle', () => {
                     elevator.getPressedFloors().forEach(f => elevator.goToFloor(f));
                     if (elevator.getPressedFloors().length === 0) {
                         elevator.goToFloor(0);
                     }
                 })
+            }
+
+            const onFloorButtonPressed = (floor) => {
+                getEmptiestElevator().goToFloor(floor.floorNum());
+            }
+
+            for (const floor of floors) {
+                floor.on('up_button_pressed', onFloorButtonPressed);
+                floor.on('down_button_pressed', onFloorButtonPressed);
             }
         },
 
