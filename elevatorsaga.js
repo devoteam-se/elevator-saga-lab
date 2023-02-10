@@ -17,22 +17,22 @@
         });
 
         elevator.on("passing_floor", function (floorNum, direction) {
-          //   if (elevator.destinationQueue.includes(floorNum)) {
-          //     elevator.destinationQueue = elevator.destinationQueue.filter(
-          //       (q) => q !== floorNum
-          //     );
-          //     elevator.checkDestinationQueue();
-          //     elevator.goToFloor(floorNum, true);
-          //   }
+          if (elevator.destinationQueue.includes(floorNum)) {
+            elevator.destinationQueue = elevator.destinationQueue.filter(
+              (q) => q !== floorNum
+            );
+            elevator.checkDestinationQueue();
+            elevator.goToFloor(floorNum, true);
+          }
         });
 
         elevator.on("stopped_at_floor", function (floorNum) {
-          //   if (elevator.destinationQueue.includes(floorNum)) {
-          //     elevator.destinationQueue = elevator.destinationQueue.filter(
-          //       (q) => q !== floorNum
-          //     );
-          //     elevator.checkDestinationQueue();
-          //   }
+          if (elevator.destinationQueue.includes(floorNum)) {
+            elevator.destinationQueue = elevator.destinationQueue.filter(
+              (q) => q !== floorNum
+            );
+            elevator.checkDestinationQueue();
+          }
         });
       }
 
