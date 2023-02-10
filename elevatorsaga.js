@@ -33,7 +33,6 @@
 
       // Let's go through all the elevators
       for (const elevator of elevators) {
-        // Whenever the elevator is idle, make it go to all the floors
         elevator.on("idle", () => {
           elevator.goToFloor(0);
         });
@@ -59,37 +58,21 @@
 
         elevator.on("stopped_at_floor", function (floorNum) {
           removeNextFloorFromQueueIfIrrelevant(elevator, floorNum);
-
-          //   if (elevator.destinationQueue.includes(floorNum)) {
-          //     elevator.destinationQueue = elevator.destinationQueue.filter(
-          //       (q) => q !== floorNum
-          //     );
-          //     elevator.checkDestinationQueue();
-          //   }
-          //
-          //
-          //   // Kolla om naesta floor fortfarande maste besoekas.
-          //   const nextFloorNum = elevator.destinationQueue.length
-          //     ? elevator.destinationQueue[0]
-          //     : -1;
-          //   if (nextFloorNum !== -1) {
-          //     if (elevator.getPressedFloors().includes(nextFloorNum)) {
-          //       return;
-          //     }
-          //     const nextFloor = floors.find((f) => f.floorNum() === nextFloorNum);
-          //     if (
-          //       nextFloor.buttonStates.down === "" &&
-          //       nextFloor.buttonStates.up === ""
-          //     ) {
-          //       return;
-          //     }
-          //     elevator.destinationQueue = elevator.destinationQueue.filter(
-          //       (q) => q !== nextFloorNum
-          //     );
-          //     elevator.checkDestinationQueue();
-          //   }
         });
       }
+
+      /**
+       *
+       * @param {Elevator[]} elevators
+       * @param {Floor} floor
+       */
+      const closestElevator = (elevators, floor) => {
+        return elevators.sort((e1, e2) => {
+          const diff1 = Math.abs(e1.currentFloor() - floor.floorNum());
+          const diff2 = Math.abs(e2.currentFloor() - floor.floorNum());
+          return diff1 - diff2;
+        })[0];
+      };
 
       /**
        *
@@ -115,7 +98,7 @@
           (e) => e.destinationQueue.length === 0
         );
         if (freeElevators.length) {
-          freeElevators[0].goToFloor(floor.floorNum());
+          closestElevator(freeElevators, floor).goToFloor(floor.floorNum());
         } else {
           const leastBusy = elevators.sort(
             (e1, e2) => e1.destinationQueue.length - e2.destinationQueue.length
@@ -124,9 +107,7 @@
             (e) =>
               e.destinationQueue.length === leastBusy.destinationQueue.length
           );
-          allLeastBusy[
-            Math.floor(Math.random() * allLeastBusy.length)
-          ].goToFloor(floor.floorNum());
+          closestElevator(allLeastBusy, floor).goToFloor(floor.floorNum());
         }
       };
 
