@@ -10,6 +10,7 @@
             // Whenever the elevator is idle, make it go to all the floors
             elevator.on('idle', () => {
                 elevator.goToFloor(0);
+                elevator.goToFloor(1);
                 elevator.goToFloor(2);
             })            
         }
